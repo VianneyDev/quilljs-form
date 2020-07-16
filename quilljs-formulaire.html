@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- Quill CSS -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/monokai-sublime.min.css" />
+
+    <title>Form Article Edito</title>
+    <style type="text/css">
+        /*convert*/
+        #content-article>div {
+            background-color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalScrollableTitle">Preview</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body embed-responsive embed-responsive-16by9">
+                    <iframe id="iframe__content" class="embed-responsive-item"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-copy">Copier code</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-12">
+
+
+                <div class="row mb-5">
+                    <div class="col-12">
+                        <h3>Header de l'article</h3>
+                    </div>
+                </div>
+
+                <div id="header-article">
+
+                    <div class="row">
+
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="inputCategory">Categories</label>
+                                <select class="form-control" id="inputCategory">
+                                    <option value="mode">Mode</option>
+                                    <option value="culture">Culture</option>
+                                    <option value="socio">Socio</option>
+                                    <option value="news">News</option>
+                                </select>
+                                <small id="inputCategory" class="form-text text-muted">La categorie de l'article, Mode,
+                                    culture, socio...</small>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="inputDate">Date de l'article</label>
+                                <input type="text" class="form-control" id="inputDate" placeholder="le 01 Janvier 2020">
+                                <small id="inputDate" class="form-text text-muted">La date de l'article</small>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="inputUrl">Url de l'article</label>
+                                <input type="text" class="form-control" id="inputUrl" placeholder="https://www...">
+                                <small id="inputUrl" class="form-text text-muted">L'url de l'article pour le bouton
+                                    partage</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputTitle">Titre de l'article</label>
+                        <input type="text" class="form-control" id="inputTitle">
+                        <small id="inputTitle" class="form-text text-muted">Le titre de l'article</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputimageHero">Image Hero</label>
+                        <input type="url" class="form-control urlImage" id="inputimageHero"
+                            placeholder="https://www...">
+                        <small id="inputimageHero" class="form-text text-muted">L'image en tete de l'article</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputCredit">Crédits de l'article</label>
+                        <input type="text" class="form-control" id="inputCredit">
+                        <small id="inputCredit" class="form-text text-muted">Les crédits de l'image Hero (insérer : &
+                            copy;
+                            | sans espace pour le logo copyright)</small>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="inputChapo">Chapo de l'article</label>
+                        <div id="toolbar-container">
+                            <span class="ql-formats">
+                                <button class="ql-bold"></button>
+                                <button class="ql-italic"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-link"></button>
+                            </span>
+                            <!-- <div class="form-group">
+                            <label for="inputChapo">Chapo de l'article</label>
+                            <textarea class="form-control tinymce chapo" id="inputChapo" rows="3"></textarea>
+                        </div> -->
+                            <div id="inputChapo" class="form-control tinymce chapo"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <h3>Contenu de l'article</h3>
+                    </div>
+                </div>
+
+
+                <div id="content-article"></div>
+
+
+                <div id="repeatingFields" class="row">
+
+                    <div class="entry form-group col-12">
+
+                        <div class="row my-3">
+                            <div class="col-12">
+                                <button type="button" class="btn btn-secondary btn-sm btn-add-row"
+                                    id="btn-subtitle">Sous-titre</button>
+                                <button type="button" class="btn btn-secondary btn-sm btn-add-row"
+                                    id="btn-quote">Citation</button>
+                                <button type="button" class="btn btn-secondary btn-sm btn-add-row"
+                                    id="btn-text">Paragraphe</button>
+                                <button type="button" class="btn btn-secondary btn-sm btn-add-row"
+                                    id="btn-image">Image</button>
+                                <button type="button" class="btn btn-secondary btn-sm btn-add-row"
+                                    id="btn-video">Video</button>
+                            </div>
+                        </div>
+
+
+                        <!-- SUBTITLE -->
+                        <div class="row mt-4" id="row-subtitle" style="display: none;">
+                            <div class="col-12">
+                                <h4 class="mb-3">
+                                    <span class="handle mr-3"><img
+                                            src="https://img.icons8.com/metro/64/000000/resize-four-directions.png"
+                                            style="max-width:20px"></span>
+                                    Sous-titre <button type="button"
+                                        class="btn btn-sm btn-danger float-right btn-remove-row">Enlever le
+                                        champ</button>
+                                </h4>
+                                <!-- <input type="text" class="form-control"> -->
+                                <textarea id="subtitleContainer" class="form-control quilljs"></textarea>
+                            </div>
+                        </div>
+                        <!-- SUBTITLE -->
+
+
+                        <!-- QUOTE -->
+                        <div class="row mt-4" id="row-quote" style="display: none;">
+                            <div class="col-12">
+                                <h4 class="mb-3">
+                                    <span class="handle mr-3"><img
+                                            src="https://img.icons8.com/metro/64/000000/resize-four-directions.png"
+                                            style="max-width:20px"></span>
+                                    Citation <button type="button"
+                                        class="btn btn-sm btn-danger float-right btn-remove-row">Enlever le
+                                        champ</button>
+                                </h4>
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                        <!-- QUOTE -->
+
+
+                        <!-- TEXT -->
+                        <div class="row mt-4" id="row-text" style="display: none;">
+                            <div class="col-12">
+                                <h4 class="mb-3">
+                                    <span class="handle mr-3"><img
+                                            src="https://img.icons8.com/metro/64/000000/resize-four-directions.png"
+                                            style="max-width:20px"></span>
+                                    Paragraphe <button type="button"
+                                        class="btn btn-sm btn-danger float-right btn-remove-row">Enlever le
+                                        champ</button>
+                                </h4>
+                                <!-- <textarea id="paraContainer" class="form-control quilljs rows="3"></textarea> -->
+                                <div id="toolbar-paraContainer">
+                                    <span class="ql-formats">
+                                        <button class="ql-bold"></button>
+                                        <button class="ql-italic"></button>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-link"></button>
+                                    </span>
+                                    <div id="paraContainer" class="form-control quilljs"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- TEXT -->
+
+
+                        <!-- IMAGE -->
+                        <div class="row mt-4" id="row-image" style="display: none;">
+                            <div class="col-12">
+                                <h4 class="mb-3">
+                                    <span class="handle mr-3"><img
+                                            src="https://img.icons8.com/metro/64/000000/resize-four-directions.png"
+                                            style="max-width:20px"></span>
+                                    Image <button type="button"
+                                        class="btn btn-sm btn-danger float-right btn-remove-row">Enlever le
+                                        champ</button>
+                                </h4>
+
+                                <div class="row image-format">
+                                    <div class="col-12">
+                                        <label class="my-1 mr-2">Format : </label>
+                                        <div class="custom-radio custom-control-inline">
+                                            <div class="custom-radio custom-control-inline">
+                                                <label><input type="radio" value="Full" checked> Image plein
+                                                    écran</label>
+                                            </div>
+                                            <div class="custom-radio custom-control-inline">
+                                                <label><input type="radio" value="Center"> Image centrée</label>
+                                            </div>
+                                            <div class="custom-radio custom-control-inline">
+                                                <label><input type="radio" value="Double"> Image double</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col">
+                                        <input type="url" class="form-control urlImage" placeholder="https://www...">
+                                    </div>
+                                </div>
+
+
+                                <div class="row mt-3 image-credit-product">
+                                    <div class="col-12">
+                                        <label class="my-1 mr-2">Style de crédit : </label>
+                                        <div class="custom-radio custom-control-inline">
+                                            <div class="custom-radio custom-control-inline">
+                                                <label><input type="radio" value="credit" checked> Crédit</label>
+                                            </div>
+                                            <div class="custom-radio custom-control-inline">
+                                                <label><input type="radio" value="product"> Produits</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row image-input-credit">
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="Photos...©">
+                                            <small id="inputCredit" class="form-text text-muted">Les crédits de
+                                                l'image</small>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="productRepeatingFields image-input-product" style="display: none;">
+                                    <div class="entry row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <input class="form-control" name="productName[]" type="text"
+                                                    placeholder="Pull, Carcel" />
+                                                <small id="inputProductName" class="form-text text-muted">Nom du
+                                                    produit</small>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <input class="form-control" name="productUrl[]" type="text"
+                                                    placeholder="http://" />
+                                                <small id="inputProductUrl" class="form-text text-muted">L'url du
+                                                    produit</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <button type="button"
+                                                class="btn btn-success btn-add-product">Ajouter</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <!-- IMAGE -->
+
+
+                        <!-- VIDEO -->
+                        <div class="row mt-4" id="row-video" style="display: none;">
+                            <div class="col-12">
+                                <h4 class="mb-3">
+                                    <span class="handle mr-3"><img
+                                            src="https://img.icons8.com/metro/64/000000/resize-four-directions.png"
+                                            style="max-width:20px"></span>
+                                    Video <button type="button"
+                                        class="btn btn-sm btn-danger float-right btn-remove-row">Enlever le
+                                        champ</button>
+                                </h4>
+                                <input type="url" class="form-control urlVideo" placeholder="https://www...">
+                            </div>
+                        </div>
+                        <!-- VIDEO -->
+
+                    </div>
+                </div>
+
+
+                <div class="row mt-5">
+
+                    <div id="textarea_import" class="col-12 mb-3" style="display:none;">
+                        <label>Importer l'article</label>
+                        <textarea class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="col-12">
+                        <button id="btn_import" class="btn btn-outline-secondary">Importer</button>
+                        <button id="btn_preview" class="btn btn-outline-secondary" data-toggle="modal"
+                            data-target="#modal">Previsualiser</button>
+                        <button id="btn_copy" class="btn btn-outline-primary">Copier le code</button>
+                    </div>
+
+                </div>
+
+
+
+
+
+
+                <div id="library" class="d-none">
+
+
+                    <!-- HEADER -->
+
+
+                    <!-- BREADCRUMB -->
+                    <div id="article__content-breadcrumb" class="row mt-3 mb-0">
+                        <div class="col-12">
+                            <span class="main-breadcrumb d-block">
+                                <a class="main-breadcrumb--item text-lowercase"
+                                    href="https://faf.printemps.com/fr/fr">Magazine</a>
+                                / <a class="main-breadcrumb--item text-lowercase to-replace"
+                                    href="https://faf.printemps.com/fr/fr/edito-article-">category</a>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- BREADCRUMB -->
+
+
+
+                    <!-- TITLE -->
+                    <div id="article__content-title" class="row justify-content-center mt-5">
+                        <div class="col-12 col-xl-11">
+                            <h1 class="article--title">TITLE</h1>
+                        </div>
+                    </div>
+                    <!-- TITLE -->
+
+
+
+                    <!-- CHAPO ARTICLE -->
+                    <div id="article__content-chapo" class="row mt-4">
+                        <div class="col-12">
+                            <!-- <p class="article--text-bold mb-0">CHAPO</p> -->
+                        </div>
+                    </div>
+                    <!-- CHAPO -->
+
+
+
+                    <!-- ARTICLE INFOS -->
+                    <div id="article__content-info" class="row justify-content mt-4">
+                        <div class="col-12">
+                            <div class="article-infos">
+                                CATEGORY | DATE
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ARTICLE INFOS -->
+
+
+                    <!-- HEADER -->
+
+
+
+
+                    <!-- CONTENT -->
+
+
+                    <!-- ARTICLE HERO IMAGE SIMPLE -->
+                    <div id="article__content-imageFull" class="article-images row mt-5 no-gutters">
+                        <div class="col-12">
+                            <div class="article-image">
+                                <img class="img-fluid" src="https://dummyimage.com/1200x680">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ARTICLE HERO IMAGE SIMPLE -->
+
+
+
+                    <!-- ARTICLE HERO IMAGE DOUBLE -->
+                    <div id="article__content-imageDouble" class="article-images row mt-4 no-gutters">
+                        <div class="col-6">
+                            <div class="article-image">
+                                <img class="img-fluid" src="https://dummyimage.com/600x680">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="article-image">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ARTICLE HERO IMAGE DOUBLE -->
+
+
+
+                    <!-- ARTICLE HERO IMAGE CENTER -->
+                    <div id="article__content-imageCenter" class="row mt-4">
+                        <div class="col-12 col-md-6 offset-md-3 article-images">
+                            <div class="article-image">
+                                <img src="https://dummyimage.com/600x680" class="img-fluid">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ARTICLE HERO IMAGE CENTER -->
+
+
+
+                    <!-- ARTICLE VIDEO -->
+                    <div id="article__content-video" class="row mt-4">
+                        <div class="col-12">
+                            <div class="embed-responsive embed-responsive-21by9">
+                                <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/NV3wWvL60Kk"
+                                    allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ARTICLE VIDEO -->
+
+
+
+                    <!-- ARTICLE CREDIT -->
+                    <div id="article__content-creditFull" class="col-12">
+                        <p class="article__credit font-italic mt-2 mb-0">CREDIT</p>
+                    </div>
+                    <!-- ARTICLE CREDIT -->
+
+
+
+                    <!-- ARTICLE CREDIT -->
+                    <div id="article__content-creditDouble" class="col-12">
+                        <p class="article__credit font-italic mt-2 mb-0">CREDIT</p>
+                    </div>
+                    <!-- ARTICLE CREDIT -->
+
+
+
+                    <!-- ARTICLE CREDIT CENTER-->
+                    <div id="article__content-creditCenter" class="col-12 col-md-6 offset-md-3">
+                        <p class="article__credit font-italic mt-2 mb-0">CREDIT</p>
+                    </div>
+                    <!-- ARTICLE CREDIT CENTER-->
+
+
+
+                    <!-- TEXT -->
+                    <div id="article__content-text" class="row mt-4">
+                        <div class="col-12">
+                            <p class="article--text mb-0">TEXT</p>
+                        </div>
+                    </div>
+                    <!-- TEXT -->
+
+
+
+                    <!-- QUOTES -->
+                    <div id="article__content-quote" class="row my-5">
+                        <div class="col-12">
+                            <p class="article--quotes mb-0 font-italic">&laquo; QUOTES &raquo;</p>
+                        </div>
+                    </div>
+                    <!-- QUOTES -->
+
+
+
+                    <!-- SUBTITLES -->
+                    <div id="article__content-subtitle" class="row mt-4 mb-n1">
+                        <div class="col-12">
+                            <h2 class="article--quotes mb-0 text-left">SUBTITLES</h2>
+                        </div>
+                    </div>
+                    <!-- SUBTITLES -->
+
+
+
+
+                    <!-- IN THE LOOK -->
+                    <div id="article__content-look" class="row mt-4">
+                        <div class="col-12">
+                            <div class="in-the-look mainTheme-border rounded">
+                                <strong>DANS CE LOOK : </strong>
+                                <p>
+                                    <a class="classic-link">ELEM</a>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- IN THE LOOK -->
+
+
+
+
+                    <!-- SHARE BUTTONS -->
+                    <div id="article__content-share" class="row mt-4">
+                        {EDITO_SOCIAL_LINKS}
+                    </div>
+                    <!-- FIN SHARE BUTTONS -->
+
+
+
+                    <!-- CONTENT -->
+                </div>
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <!-- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script> -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+    <!-- Quill library -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            // CLONE CONTENT ROW
+            $(document).on('click', '.btn-add-row', function (e) {
+                e.preventDefault();
+
+                var controlForm = $('#repeatingFields');
+                var container = $('#content-article');
+
+                var elems = $(this).attr("id").split(/[\s-]+/);
+                var elem = elems[elems.length - 1];
+
+                var currentEntry = controlForm.find('#row-' + elem + ':first');
+
+                // var newEntry = $(currentEntry.clone()).insertBefore(controlForm);
+                var newEntry = $(currentEntry.clone()).appendTo(container);
+                newEntry.show();
+
+                var divID = 'id_' + jQuery.now();
+
+                if (elem == "text") {
+                    /* var textarea = newEntry.find('textarea.tinymce');
+                    textarea.attr("id", 'textarea_' + divID);
+                    tinymce.EditorManager.execCommand('mceAddEditor', false, 'textarea_' + divID);
+                    tinyMCE.execCommand('mceAddControl', false, 'textarea_' + divID); */
+
+                    // var textarea = new Quill('textarea.quilljs', {
+                    //     theme: 'snow'
+                    // });
+                }
+
+
+                if (elem == "image") {
+                    //FORMAT
+                    var radiosFormat = newEntry.find('.image-format input[type=radio]');
+                    radiosFormat.attr("name", 'radioFormat_' + divID);
+
+                    // CREDIT
+                    var radiosCredit = newEntry.find('.image-credit-product input[type=radio]');
+                    radiosCredit.attr("name", 'radioCredit_' + divID);
+                }
+            });
+
+            // Enlever le champ
+            $(document).on('click', '.btn-remove-row', function (e) {
+                var didConfirm = confirm("Are you sure You want to delete");
+                if (didConfirm == true) {
+                    e.preventDefault();
+                    $(this).closest('.row').remove();
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+
+
+            // IMAGE
+            // Format d'image
+            $(document).on('click', '.image-format input[type=radio]', function (e) {
+                var name = $(this).attr("name");
+                // var radioValue = $("input[name='" + name + "']:content-page article mb-20").val();
+                var radioValue = $(this).val()
+
+                var container = $(this).closest('#row-image');
+
+                var img = container.find('.urlImage:first').closest('.col');
+                var count = container.find('.urlImage').length;
+                if (radioValue == "Double") {
+                    if (count <= 1) {
+                        $(img.clone()).insertAfter(img);
+                    }
+                } else {
+                    if (count > 1) {
+                        var containerLastImage = container.find('.col:last-child');
+                        $(containerLastImage).remove();
+                    }
+                }
+            });
+
+
+            // Crédit d'image et credit product
+            $(document).on('click', '.image-credit-product input[type=radio]', function (e) {
+                var name = $(this).attr("name");
+                var radioValue = $("input[name='" + name + "']:checked").val();
+                var container = $(this).closest('#row-image');
+                $('.image-input-credit', container).hide();
+                $('.image-input-product', container).hide();
+                $('.image-input-' + radioValue, container).show();
+            });
+
+
+            // Product listing d'image
+            $(document).on('click', '.btn-add-product', function (e) {
+                e.preventDefault();
+                var controlForm = $(this).closest('.productRepeatingFields'),
+                    currentEntry = $(this).parents('.entry:first'),
+                    newEntry = $(currentEntry.clone()).appendTo(controlForm);
+                newEntry.find('input').val('');
+                controlForm.find('.entry:not(:last-child) .btn-add-product')
+                    .removeClass('btn-add-product').addClass('btn-remove-product')
+                    .removeClass('btn-success').addClass('btn-danger')
+                    .html('Enlever');
+            }).on('click', '.btn-remove-product', function (e) {
+                e.preventDefault();
+                $(this).parents('.entry:first').remove();
+                return false;
+            });
+
+
+            // QUILLJS
+
+            var quill = new Quill('#inputChapo', {
+                modules: {
+                    toolbar: '#toolbar-container'
+                },
+                theme: 'snow'
+            });
+
+            var quillPara = new Quill('#paraContainer', {
+                modules: {
+                    toolbar: '#toolbar-paraContainer'
+                },
+                theme: 'snow'
+            });
+
+            // var otherquill = new Quill('#subtitleContainer', {
+            //     modules: {
+            //         toolbar: toolbarOptions
+            //     },
+            //     theme: 'snow'
+            // });
+
+            // let chapoQuill = new Quill('textarea.chapo', {
+            //     modules: {
+            //         toolbar: toolbarOptions
+            //     },
+            // });
+
+            // let currentEditor;
+            // let currentFormats;
+
+            // createEditor("#paraContainer"); // textarea de Paragraphe
+            // createEditor("#subtitleContainer"); // textarea de Sous-titre
+
+            // function createEditor(selector) {
+            //     let quill = new Quill(selector, {
+            //         modules: {
+            //             toolbar: toolbarOptions
+            //         },
+            //         theme: 'snow'
+            //     });
+
+            //     quill.on('editor-change', (e, ...args) => {
+            //         currentEditor = quill;
+            //         updateButtons();
+            //     });
+            // }
+
+            // function updateButtons() {
+            //     if (currentEditor.getSelection()) {
+            //         currentFormats = currentEditor.getFormats();
+
+            //         if (currentFormats.bold) {
+            //             bold.classList.add('active');
+            //         }
+            //         else {
+            //             bold.classList.remove('active');
+            //         }
+            //     }
+            // }
+
+            // function onBoldClick() { 
+            //     if (!currentFormats || !currentEditor) {
+            //         return;
+            //     }
+
+            //     if (currentFormats.bold) {
+            //         currentEditor.format('bold', false);
+            //     }
+
+            //     else {
+            //         currentEditor.format('bold', true);
+            //     }
+            // }
+
+
+            // IMAGE URL
+            $('body').on('change', 'input.urlImage', function () {
+                $(this).next('img').remove();
+                var img = 'id_' + jQuery.now();
+                url = $(this).val();
+                var img = $('<img />', { src: url, class: 'img-fluid mt-3', id: img });
+                $(this).after(img);
+            });
+
+
+            // VIDEO URL
+            $('body').on('change', 'input.urlVideo', function () {
+                $(this).next('iframe').remove();
+                var img = 'id_' + jQuery.now();
+                url = $(this).val();
+                var img = $('<iframe />', { src: url, class: 'img-fluid mt-3', id: img });
+                $(this).after(img);
+            });
+
+            // Sortable
+            $("#content-article").sortable({
+                axis: "y",
+                cursor: "move",
+                handle: ".handle",
+                start: function (e, ui) {
+                    $(ui.item).find('textarea').each(function () {
+                        document.execCommand('removeFormat', false, $(this).attr('id'));
+                    });
+                },
+                stop: function (e, ui) {
+                    $(ui.item).find('textarea').each(function () {
+                        document.execCommand('mceAddEditor', true, $(this).attr('id'));
+                    });
+                }
+            });
+            $("#content-article").disableSelection();
+
+
+
+            //Create content
+            function createContent() {
+                // HEADER
+                var _category = $("#inputCategory option:selected", "#header-article").val();
+                var _date = $("input#inputDate", "#header-article").val();
+                var _url = $("input#inputUrl", "#header-article").val();
+                var _title = $("input#inputTitle", "#header-article").val();
+                var _credit = $("input#inputCredit", "#header-article").val();
+                var _urlImage = $("input#inputimageHero", "#header-article").val();
+                // var _chapo = $("textarea#inputChapo", "#header-article").val();
+                var _chapo = document.get("inputChapo").getContent();
+
+                var style = '<style type="text/css">.show>.socials-networks-button.dropdown-toggle,.socials-networks-button:hover,.socials-networks-button:not(:disabled):not(.disabled).active,.socials-networks-button:not(:disabled):not(.disabled):active{background:0 0;color:inherit}.article--text em{font-style:italic}.article--text strong{font-weight:700}.article-images{border-radius:.35rem!important;overflow:hidden}.article-images .article-image{border-radius:0!important}.article--quotes{font-family:printania}.in-the-look p{font-family:Roboto;font-size:.875rem;display:inline}.article__credit{font-weight:400}#content-article>div{background-color:#fff}</style>';
+
+                var html = $([]);
+
+                // BREADCRUMB
+                // var breadcrumb = $("#library #article__content-breadcrumb").clone();
+                // var a = breadcrumb.find('a:last');
+                // a.attr('href', a.attr('href') + _category);
+                // a.html(_category);
+                // html = html.add(breadcrumb);
+
+                // TITLE
+                // if (_title) {
+                //     var title = $("#library #article__content-title").clone();
+                //     title.children().children().html(_title);
+                //     html = html.add(title);
+                // }
+
+                // // INFO
+                // if (_date || _category) {
+                //     var info = $("#library #article__content-info").clone();
+                //     var date = _date ? ' | ' + _date : '';
+                //     info.children().children().html(_category.toUpperCase() + date);
+                //     html = html.add(info);
+                // }
+
+                // // HERO IMAGE
+                // var heroImage = $("#library #article__content-imageFull").clone();
+                // heroImage.attr('id', 'heroImage_' + 'id_' + jQuery.now());
+                // $('img', heroImage).attr('src', _urlImage);
+                // html = html.add(heroImage);
+
+                // CREDIT
+                // if (_credit) {
+                //     var credit = $('#library #article__content-creditFull').clone();
+                //     $('.article__credit', credit).html(_credit);
+                //     html = html.add(credit);
+                // }
+
+                // SHARE
+                // var share = $("#library #article__content-share").clone();
+                // var urlEncode = encodeURIComponent(_url);
+                // $('.choice-network a:first-child', share).attr("href", $('.choice-network a:first-child').attr("href") + urlEncode);
+                // $('.choice-network a:nth-child(2)', share).attr("href", $('.choice-network a:nth-child(2)').attr("href") + urlEncode);
+
+                // html = html.add(share);
+
+                // CHAPO
+                // var chapo = $("#library #article__content-chapo").clone();
+                // _chapo = $(_chapo).addClass("article--text-bold");
+                // chapo.children().html(_chapo);
+                // html = html.add(chapo);
+
+
+
+                // $("#content-article div[id^=row-]").each(function (index) {
+
+                //     var elems = $(this).attr("id").split(/[\s-]+/);
+                //     var elem = elems[elems.length - 1];
+
+                //     var divID = 'id_' + jQuery.now();
+
+                //     var content = $("#library #article__content-" + elem).clone();
+
+
+                //     if (elem == "image") {
+                //         //FORMAT
+                //         var radioFormat = $(this).find('.image-format input[type=radio]:checked').val();
+                //         content = $("#library #article__content-image" + radioFormat).clone(false);
+                //         content.attr('id', 'image_' + divID);
+
+                //         $('div[class^=col-]:first img', content).attr('src', $('div[class^=col-]:first-child input.urlImage', this).val());
+
+                //         if (radioFormat == 'Double') {
+                //             var img = $('<img class="img-fluid">');
+                //             img.attr('src', $('div[class^=col-]:last-child input.urlImage', this).val());
+                //             $('div[class^=col-]:last-child div', content).append(img);
+                //         }
+
+                //         // CREDIT / PRODUCT
+                //         var radioCreditProduct = $(this).find('.image-credit-product input[type=radio]:checked').val();
+                //         if (radioCreditProduct == "credit") {
+                //             var contentCredit = $(this).find('.image-input-' + radioCreditProduct + ' input').val();
+                //             var subContent = $("#library #article__content-credit" + radioFormat).clone(false);
+                //             $('.article__credit', subContent).html(contentCredit);
+                //         } else if (radioCreditProduct == "product") {
+                //             var parent = this;
+                //             $(".image-input-product input[name^='productName']", parent).each(function (i) {
+                //                 alert($(this).val());
+                //                 $(".image-input-product input[name^='productUrl']", parent)
+
+                //             });
+                //         }
+
+                //         content.append(subContent);
+                //         // var radiosCredit = newEntry.find('.image-credit-product input[type=radio]');
+                //         // radiosCredit.attr( "name", 'radioCredit_' + divID );
+
+                //     } else if (elem == "text") {
+                //         var id = $('textarea', this).attr('id');
+                //         content.children().children().html(document.get(id).getContent());
+                //     } else if (elem == "video") {
+                //         $('iframe', content).attr('src', $('input', this).val());
+
+                //     } else {
+                //         content.children().children().html($('input', this).val());
+                //     }
+
+                //     html = html.add(content);
+                // });
+
+                //CONTAINER
+                html = $('<div class="content-page article mb-20"></div>').wrapInner(html);
+                // html = $('<div class="col-12 col-lg-11 m-auto p-lg-0"></div>').wrapInner(html);
+                // html = $('<div class="row w-100 m-auto pt-0 pb-5">').wrapInner(html);
+
+                html = $(style).add(html);
+
+                return html;
+            }
+
+
+
+            $(document).on('click', '#btn_preview', function (e) {
+                e.preventDefault();
+                var iframe = $('iframe#iframe__content');
+                iframe.ready(function () {
+                    // Empty iframe
+                    iframe.contents().find("head").html('');
+                    iframe.contents().find("body").html('');
+
+                    iframe.contents().find("head").append('<link rel="stylesheet" href="https://medias-cache.printemps.com/design/front_office/pcom/assets/css/all.css" type="text/css" />');
+
+                    var container = $('<div class="container"></div>');
+                    var content = createContent();
+                    container.append(content);
+                    iframe.contents().find("body").append(container);
+                });
+            });
+
+
+
+            $(document).on('click', '#btn_import', function (e) {
+                e.preventDefault();
+                $('#textarea_import').toggle();
+            });
+
+
+        });
+    </script>
+</body>
+
+</html>
